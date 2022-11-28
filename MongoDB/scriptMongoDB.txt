@@ -1,0 +1,108 @@
+# UPDATING
+sudo apt-get update
+
+# INSTALLING JAVA JRE AND JDK
+sudo apt-get -y install default-jre
+sudo apt-get -y install default-jdk
+
+# INSTALLING MAVEN
+sudo apt-get update
+sudo apt-get -y install maven
+
+# INSTALLING DOCKER
+sudo apt-get update
+sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt-get -y install docker-ce
+
+# INSTALLING DOCKER-COMPOSE
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# INSTALLING PYTHON2
+sudo apt-get -y install python2
+
+# SETTING PYTHON2 AS PYTHON
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+sudo update-alternatives --config python
+
+# DOWNLOAD YCSB FOLDER
+curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
+tar xfvz ycsb-0.17.0.tar.gz
+cd ycsb-0.17.0/
+
+# CREATING FOLDER AND DOCKER-COMPOSE FILE
+mkdir database
+
+echo 'version: "3.8"
+
+services:
+  mongo1:
+    image: mongo:5
+    container_name: mongo1
+    command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30001"]
+    volumes:
+      - ./data/mongo-1:/data/db
+    ports:
+      - 30001:30001
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'\''my-replica-set'\'',members:[{_id:0,host:\"mongo1:30001\"},{_id:1,host:\"mongo2:30002\"},{_id:2,host:\"mongo3:30003\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+
+  mongo2:
+    image: mongo:5
+    container_name: mongo2
+    command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30002"]
+    volumes:
+      - ./data/mongo-2:/data/db
+    ports:
+      - 30002:30002
+
+  mongo3:
+    image: mongo:5
+    container_name: mongo3
+    command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30003"]
+    volumes:
+      - ./data/mongo-3:/data/db
+    ports:
+      - 30003:30003' > database/docker-compose-mongodb.yml
+
+# UP THE DOCKER CONTAINER IN THE BACKGROUND
+sudo docker-compose -f database/docker-compose-mongodb.yml up -d
+
+# ADD SUDO RIGHT TO THE HOSTS FILE
+sudo chmod -R 777 /etc/hosts
+
+# SET UP THE HOSTS
+echo "127.0.0.1 localhost
+127.0.0.1	mongo1
+127.0.0.1	mongo2
+127.0.0.1	mongo3
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts" > /etc/hosts
+
+# LAUNCH THE WORKLOAD
+./bin/ycsb load mongodb -s -P workloads/workloada -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > ALoadMongoDB.txt
+./bin/ycsb run mongodb -s -P workloads/workloada -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > ARunMongoDB.txt
+
+./bin/ycsb load mongodb -s -P workloads/workloadb -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > BLoadMongoDB.txt
+./bin/ycsb run mongodb -s -P workloads/workloadb -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > BRunMongoDB.txt
+
+./bin/ycsb load mongodb -s -P workloads/workloadc -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > CLoadMongoDB.txt
+./bin/ycsb run mongodb -s -P workloads/workloadc -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > CRunMongoDB.txt
+
+./bin/ycsb load mongodb -s -P workloads/workloadd -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > DLoadMongoDB.txt
+./bin/ycsb run mongodb -s -P workloads/workloadd -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > DRunMongoDB.txt
+
+./bin/ycsb load mongodb -s -P workloads/workloade -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > ELoadMongoDB.txt
+./bin/ycsb run mongodb -s -P workloads/workloade -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > ERunMongoDB.txt
+
+./bin/ycsb load mongodb -s -P workloads/workloadf -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > FLoadMongoDB.txt
+./bin/ycsb run mongodb -s -P workloads/workloadf -p recordcount=1000 -p mongodb.upsert=true -p mongodb.url=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set > FRunMongoDB.txt
