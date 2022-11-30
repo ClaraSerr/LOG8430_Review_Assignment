@@ -1,0 +1,38 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf600
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 [OVERALL], RunTime(ms), 4957\
+[OVERALL], Throughput(ops/sec), 201.73492031470647\
+[TOTAL_GCS_G1_Young_Generation], Count, 6\
+[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 35\
+[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.7060722211014727\
+[TOTAL_GCS_G1_Old_Generation], Count, 0\
+[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0\
+[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0\
+[TOTAL_GCs], Count, 6\
+[TOTAL_GC_TIME], Time(ms), 35\
+[TOTAL_GC_TIME_%], Time(%), 0.7060722211014727\
+[CLEANUP], Operations, 1\
+[CLEANUP], AverageLatency(us), 1929.0\
+[CLEANUP], MinLatency(us), 1929\
+[CLEANUP], MaxLatency(us), 1929\
+[CLEANUP], 95thPercentileLatency(us), 1929\
+[CLEANUP], 99thPercentileLatency(us), 1929\
+[INSERT], Operations, 52\
+[INSERT], AverageLatency(us), 989.7115384615385\
+[INSERT], MinLatency(us), 315\
+[INSERT], MaxLatency(us), 4455\
+[INSERT], 95thPercentileLatency(us), 2897\
+[INSERT], 99thPercentileLatency(us), 4431\
+[INSERT], Return=OK, 52\
+[SCAN], Operations, 948\
+[SCAN], AverageLatency(us), 4805.4177215189875\
+[SCAN], MinLatency(us), 147\
+[SCAN], MaxLatency(us), 24447\
+[SCAN], 95thPercentileLatency(us), 9279\
+[SCAN], 99thPercentileLatency(us), 12895\
+[SCAN], Return=OK, 948}
