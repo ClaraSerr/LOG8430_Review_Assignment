@@ -1,184 +1,131 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf600
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red70\green137\blue204;
-\red202\green202\blue202;\red194\green126\blue101;\red0\green0\blue0;}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c33725\c61176\c83922;
-\cssrgb\c83137\c83137\c83137;\cssrgb\c80784\c56863\c47059;\csgray\c0;}
-\margl1440\margr1440\vieww16580\viewh14940\viewkind0
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+# UPDATING
+sudo apt-get update
 
-\f0\fs24 \cf2 \cb3 # UPDATING\
-sudo apt-get update\
-\
-# INSTALLING JAVA JRE AND JDK\
-sudo apt-get -y install default-jre\
-sudo apt-get -y install default-jdk\
-\
-# INSTALLING MAVEN\
-sudo apt-get update\
-sudo apt-get -y install maven\
-\
-# INSTALLING DOCKER\
-sudo apt-get update\
-sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common\
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -\
-sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"\
-sudo apt-get -y install docker-ce\
-\
-# INSTALLING DOCKER-COMPOSE\
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose\
-sudo chmod +x /usr/local/bin/docker-compose\
-\
-# INSTALLING PYTHON2\
-sudo apt-get -y install python2\
-\
-# SETTING PYTHON2 AS PYTHON\
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1\
-sudo update-alternatives --config python\
-\
-# DOWNLOAD YCSB FOLDER\
-curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz\
-tar xfvz ycsb-0.17.0.tar.gz\
-cd ycsb-0.17.0/\
-\
-# CREATING FOLDER AND DOCKER-COMPOSE FILE\
-mkdir database\
-\
-echo 'version: "3.8"\
-\
-\pard\pardeftab720\sl360\partightenfactor0
-\cf2 \expnd0\expndtw0\kerning0
-version: '2'\
-services:\
-  redis-node-0:\
-    image: docker.io/bitnami/redis-cluster:7.0\
-    volumes:\
-      - redis-cluster_data-0:/bitnami/redis/data\
-    ports:\
-      - '6379:6379'\
-    environment:\
-      - ALLOW_EMPTY_PASSWORD=yes\
-      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'\
-\
-  redis-node-1:\
-    image: docker.io/bitnami/redis-cluster:7.0\
-    volumes:\
-      - redis-cluster_data-1:/bitnami/redis/data\
-    environment:\
-      - ALLOW_EMPTY_PASSWORD=yes\
-      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'\
-\
-  redis-node-2:\
-    image: docker.io/bitnami/redis-cluster:7.0\
-    volumes:\
-      - redis-cluster_data-2:/bitnami/redis/data\
-    environment:\
-      - ALLOW_EMPTY_PASSWORD=yes\
-      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'\
-\
-  redis-node-3:\
-    image: docker.io/bitnami/redis-cluster:7.0\
-    volumes:\
-      - redis-cluster_data-3:/bitnami/redis/data\
-    environment:\
-      - ALLOW_EMPTY_PASSWORD=yes\
-      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'\
-\
-  redis-node-4:\
-    image: docker.io/bitnami/redis-cluster:7.0\
-    volumes:\
-      - redis-cluster_data-4:/bitnami/redis/data\
-    environment:\
-      - ALLOW_EMPTY_PASSWORD=yes\
-      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'\
-\
-  redis-node-5:\
-    image: docker.io/bitnami/redis-cluster:7.0\
-    volumes:\
-      - redis-cluster_data-5:/bitnami/redis/data\
-    depends_on:\
-      - redis-node-0\
-      - redis-node-1\
-      - redis-node-2\
-      - redis-node-3\
-      - redis-node-4\
-    environment:\
-      - ALLOW_EMPTY_PASSWORD=yes\
-      - 'REDIS_CLUSTER_REPLICAS=1'\
-      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'\
-      - 'REDIS_CLUSTER_CREATOR=yes'\
-\
-volumes:\
-  redis-cluster_data-0:\
-    driver: local\
-  redis-cluster_data-1:\
-    driver: local\
-  redis-cluster_data-2:\
-    driver: local\
-  redis-cluster_data-3:\
-    driver: local\
-  redis-cluster_data-4:\
-    driver: local\
-  redis-cluster_data-5:\
-    driver: local\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 \kerning1\expnd0\expndtw0 \
-\
-# LAUNCH THE WORKLOAD\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+# INSTALLING JAVA JRE AND JDK
+sudo apt-get -y install default-jre
+sudo apt-get -y install default-jdk
 
-\f1\fs22 \cf7 \cb1 \CocoaLigature0 ./bin/ycsb load redis -s -P workloads/workloada 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadA.txt\
-./bin/ycsb run redis -s -P workloads/workloada 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunA.txt
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 \cb3 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+# INSTALLING MAVEN
+sudo apt-get update
+sudo apt-get -y install maven
 
-\f1\fs22 \cf7 \cb1 \CocoaLigature0 ./bin/ycsb load redis -s -P workloads/workloadb 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadB.txt\
-./bin/ycsb run redis -s -P workloads/workloadb 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunB.txt\
-\
-./bin/ycsb load redis -s -P workloads/workloadc 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadC.txt\
-./bin/ycsb run redis -s -P workloads/workloadc 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunC.txt
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 \cb3 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+# INSTALLING DOCKER
+sudo apt-get update
+sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt-get -y install docker-ce
 
-\f1\fs22 \cf7 \cb1 \CocoaLigature0 ./bin/ycsb load redis -s -P workloads/workloadd 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadD.txt\
-./bin/ycsb run redis -s -P workloads/workloadd 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunD.txt\
-\
-./bin/ycsb load redis -s -P workloads/workloade 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadE.txt\
-./bin/ycsb run redis -s -P workloads/workloade 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunE.txt
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf2 \cb3 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+# INSTALLING DOCKER-COMPOSE
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-\f1\fs22 \cf7 \cb1 \CocoaLigature0 ./bin/ycsb load redis -s -P workloads/workloadf 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadF.txt\
-./bin/ycsb run redis -s -P workloads/workloadf 
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 -p recordcount=1000
-\f1\fs22 \cf7 \cb1 \CocoaLigature0  -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunF.txt
-\f0\fs24 \cf2 \cb3 \CocoaLigature1 \
-}
+# INSTALLING PYTHON2
+sudo apt-get -y install python2
+
+# SETTING PYTHON2 AS PYTHON
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+sudo update-alternatives --config python
+
+# DOWNLOAD YCSB FOLDER
+curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
+tar xfvz ycsb-0.17.0.tar.gz
+cd ycsb-0.17.0/
+
+# CREATING FOLDER AND DOCKER-COMPOSE FILE
+mkdir database
+
+echo 'version: "3.8"
+
+version: '2'
+services:
+  redis-node-0:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-0:/bitnami/redis/data
+    ports:
+      - '6379:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-1:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-1:/bitnami/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-2:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-2:/bitnami/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-3:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-3:/bitnami/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-4:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-4:/bitnami/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-5:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-5:/bitnami/redis/data
+    depends_on:
+      - redis-node-0
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - 'REDIS_CLUSTER_REPLICAS=1'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'REDIS_CLUSTER_CREATOR=yes'
+
+volumes:
+  redis-cluster_data-0:
+    driver: local
+  redis-cluster_data-1:
+    driver: local
+  redis-cluster_data-2:
+    driver: local
+  redis-cluster_data-3:
+    driver: local
+  redis-cluster_data-4:
+    driver: local
+  redis-cluster_data-5:
+    driver: local
+
+# LAUNCH THE WORKLOAD
+./bin/ycsb load redis -s -P workloads/workloada -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadA.txt
+./bin/ycsb run redis -s -P workloads/workloada -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunA.txt
+
+./bin/ycsb load redis -s -P workloads/workloadb -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadB.txt
+./bin/ycsb run redis -s -P workloads/workloadb -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunB.txt
+
+./bin/ycsb load redis -s -P workloads/workloadc -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadC.txt
+./bin/ycsb run redis -s -P workloads/workloadc -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunC.txt
+
+./bin/ycsb load redis -s -P workloads/workloadd -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadD.txt
+./bin/ycsb run redis -s -P workloads/workloadd -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunD.txt
+
+./bin/ycsb load redis -s -P workloads/workloade -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadE.txt
+./bin/ycsb run redis -s -P workloads/workloade -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunE.txt
+
+./bin/ycsb load redis -s -P workloads/workloadf -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputLoadF.txt
+./bin/ycsb run redis -s -P workloads/workloadf -p recordcount=1000 -p "redis.host=172.20.0.7" -p "redis.port=6379" -p "redis.cluster=true" > outputRunF.txt
