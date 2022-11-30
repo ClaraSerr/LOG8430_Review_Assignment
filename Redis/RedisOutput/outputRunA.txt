@@ -1,38 +1,31 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf600
-{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
-{\*\expandedcolortbl;;\csgray\c0;}
-\margl1440\margr1440\vieww10800\viewh8400\viewkind0
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
-
-\f0\fs22 \cf2 \CocoaLigature0 [OVERALL], RunTime(ms), 608\
-[OVERALL], Throughput(ops/sec), 1644.7368421052631\
-[TOTAL_GCS_G1_Young_Generation], Count, 2\
-[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 16\
-[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 2.631578947368421\
-[TOTAL_GCS_G1_Old_Generation], Count, 0\
-[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0\
-[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0\
-[TOTAL_GCs], Count, 2\
-[TOTAL_GC_TIME], Time(ms), 16\
-[TOTAL_GC_TIME_%], Time(%), 2.631578947368421\
-[READ], Operations, 512\
-[READ], AverageLatency(us), 242.703125\
-[READ], MinLatency(us), 78\
-[READ], MaxLatency(us), 10255\
-[READ], 95thPercentileLatency(us), 348\
-[READ], 99thPercentileLatency(us), 2407\
-[READ], Return=OK, 512\
-[CLEANUP], Operations, 1\
-[CLEANUP], AverageLatency(us), 1730.0\
-[CLEANUP], MinLatency(us), 1730\
-[CLEANUP], MaxLatency(us), 1730\
-[CLEANUP], 95thPercentileLatency(us), 1730\
-[CLEANUP], 99thPercentileLatency(us), 1730\
-[UPDATE], Operations, 488\
-[UPDATE], AverageLatency(us), 292.08196721311475\
-[UPDATE], MinLatency(us), 138\
-[UPDATE], MaxLatency(us), 4235\
-[UPDATE], 95thPercentileLatency(us), 387\
-[UPDATE], 99thPercentileLatency(us), 2285\
-[UPDATE], Return=OK, 488}
+[OVERALL], RunTime(ms), 608
+[OVERALL], Throughput(ops/sec), 1644.7368421052631
+[TOTAL_GCS_G1_Young_Generation], Count, 2
+[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 16
+[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 2.631578947368421
+[TOTAL_GCS_G1_Old_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0
+[TOTAL_GCs], Count, 2
+[TOTAL_GC_TIME], Time(ms), 16
+[TOTAL_GC_TIME_%], Time(%), 2.631578947368421
+[READ], Operations, 512
+[READ], AverageLatency(us), 242.703125
+[READ], MinLatency(us), 78
+[READ], MaxLatency(us), 10255
+[READ], 95thPercentileLatency(us), 348
+[READ], 99thPercentileLatency(us), 2407
+[READ], Return=OK, 512
+[CLEANUP], Operations, 1
+[CLEANUP], AverageLatency(us), 1730.0
+[CLEANUP], MinLatency(us), 1730
+[CLEANUP], MaxLatency(us), 1730
+[CLEANUP], 95thPercentileLatency(us), 1730
+[CLEANUP], 99thPercentileLatency(us), 1730
+[UPDATE], Operations, 488
+[UPDATE], AverageLatency(us), 292.08196721311475
+[UPDATE], MinLatency(us), 138
+[UPDATE], MaxLatency(us), 4235
+[UPDATE], 95thPercentileLatency(us), 387
+[UPDATE], 99thPercentileLatency(us), 2285
+[UPDATE], Return=OK, 488
