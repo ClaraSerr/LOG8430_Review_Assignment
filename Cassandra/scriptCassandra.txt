@@ -1,0 +1,97 @@
+# UPDATING
+sudo apt-get update
+
+# INSTALLING JAVA JRE AND JDK
+sudo apt-get -y install default-jre
+sudo apt-get -y install default-jdk
+
+# INSTALLING MAVEN
+sudo apt-get update
+sudo apt-get -y install maven
+
+# INSTALLING DOCKER
+sudo apt-get update
+sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt-get -y install docker-ce
+
+# INSTALLING DOCKER-COMPOSE
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# INSTALLING PYTHON2
+sudo apt-get -y install python2
+
+# SETTING PYTHON2 AS PYTHON
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+sudo update-alternatives --config python
+
+# DOWNLOAD YCSB FOLDER
+curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
+tar xfvz ycsb-0.17.0.tar.gz
+cd ycsb-0.17.0/
+
+# CREATING FOLDER AND DOCKER-COMPOSE FILE
+mkdir database
+
+
+
+
+# ADD SUDO RIGHT TO THE HOSTS FILE
+sudo chmod -R 777 /etc/hosts
+
+# SET UP THE HOSTS
+echo "127.0.0.1 localhost
+172.18.0.2	cassandra-node1
+172.18.0.3	cassandra-node2
+172.18.0.4	cassandra-node3
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts" > /etc/hosts
+
+sudo docker network create cassandra-network
+sudo docker run --name cassandra-node1   --net=cassandra-network   -p 9042:9042   -e CASSANDRA_CLUSTER_NAME=cassandra-cluster   -e CASSANDRA_SEEDS=cassandra-node1,cassandra-node2,cassandra-node3   -d bitnami/cassandra:latest
+sudo docker run --name cassandra-node2   --net=cassandra-network   -p 9043:9043   -e CASSANDRA_CLUSTER_NAME=cassandra-cluster   -e CASSANDRA_SEEDS=cassandra-node1,cassandra-node2,cassandra-node3   -d bitnami/cassandra:latest
+sudo docker run --name cassandra-node3   --net=cassandra-network   -p 9044:9044   -e CASSANDRA_CLUSTER_NAME=cassandra-cluster   -e CASSANDRA_SEEDS=cassandra-node1,cassandra-node2,cassandra-node3  -d bitnami/cassandra:latest
+
+
+sudo docker exec -it cassandra-node1 cqlsh 172.18.0.2 -u cassandra -p cassandra
+
+create keyspace ycsb
+ WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor': 3 };
+USE ycsb;
+create table usertable (
+             y_id varchar primary key,
+             field0 varchar,
+             field1 varchar,
+             field2 varchar,
+             field3 varchar,
+             field4 varchar,
+             field5 varchar,
+             field6 varchar,
+             field7 varchar,
+             field8 varchar,
+             field9 varchar);
+
+./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloada -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > ALoadCassandra.txt
+./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloada -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > ARunCassandra.txt
+
+./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadb -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > BLoadCassandra.txt
+./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadb -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > BRunCassandra.txt
+
+./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadc -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > CLoadCassandra.txt
+./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadc -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > CRunCassandra.txt
+
+./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadd -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > DLoadCassandra.txt
+./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadd -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > DRunCassandra.txt
+
+./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloade -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > ELoadCassandra.txt
+./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloade -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > ERunCassandra.txt
+
+./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadf -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > FLoadCassandra.txt
+./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloadf -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > FRunCassandra.txt
