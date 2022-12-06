@@ -32,27 +32,7 @@ curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.
 tar xfvz ycsb-0.17.0.tar.gz
 cd ycsb-0.17.0/
 
-# CREATING FOLDER AND DOCKER-COMPOSE FILE
-mkdir database
 
-
-
-
-# ADD SUDO RIGHT TO THE HOSTS FILE
-sudo chmod -R 777 /etc/hosts
-
-# SET UP THE HOSTS
-echo "127.0.0.1 localhost
-172.18.0.2	cassandra-node1
-172.18.0.3	cassandra-node2
-172.18.0.4	cassandra-node3
-# The following lines are desirable for IPv6 capable hosts
-::1 ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts" > /etc/hosts
 
 sudo docker network create cassandra-network
 sudo docker run --name cassandra-node1   --net=cassandra-network   -p 9042:9042   -e CASSANDRA_CLUSTER_NAME=cassandra-cluster   -e CASSANDRA_SEEDS=cassandra-node1,cassandra-node2,cassandra-node3   -d bitnami/cassandra:latest
@@ -77,6 +57,8 @@ create table usertable (
              field7 varchar,
              field8 varchar,
              field9 varchar);
+
+
 
 ./bin/ycsb load cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloada -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > ALoadCassandra.txt
 ./bin/ycsb run cassandra-cql -p hosts="172.18.0.2,172.18.0.3,172.18.0.4" -P workloads/workloada -p recordcount=1000 -p cassandra.username=cassandra -p cassandra.password=cassandra > ARunCassandra.txt
